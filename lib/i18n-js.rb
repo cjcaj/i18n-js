@@ -160,8 +160,18 @@ module SimplesIdeias
     # Initialize and return translations
     def translations
       ::I18n.backend.instance_eval do
-        init_translations unless initialized?
-        translations
+        # rebuild nested structure
+        t = {}
+        store.keys("*.js.*").each do |k|
+          value = ActiveSupport::JSON.decode(Translator.store.get(k))
+          unless value.is_a?(Hash)
+            k.split('.').reverse.each do |scope|
+              value = {scope => value}
+            end
+            t.merge!(value, &MERGER)
+          end
+        end
+        t
       end
     end
 
