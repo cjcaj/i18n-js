@@ -55,7 +55,7 @@ I18n.fallbacks = false;
 I18n.defaultSeparator = ".";
 
 // Set current locale to null
-I18n.locale = null;
+I18n.locale = I18n.locale || null;
 
 // Set the placeholder format. Accepts `{{placeholder}}` and `%{placeholder}`.
 I18n.PLACEHOLDER = /(?:\{\{|%\{)(.*?)(?:\}\}?)/gm;
