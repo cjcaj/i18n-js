@@ -159,19 +159,20 @@ module SimplesIdeias
 
     # Initialize and return translations
     def translations
+      initial_scopes = config[:initial_scopes] || ['*']
       ::I18n.backend.instance_eval do
-        # rebuild nested structure
-        t = {}
-        store.keys("*.js.*").each do |k|
-          value = ActiveSupport::JSON.decode(Translator.store.get(k))
+        translations = {}
+        keys = initial_scopes.map {|scope| store.keys(scope)}
+        keys.flatten.uniq.each do |k|
+          value = ActiveSupport::JSON.decode(store.get(k))
           unless value.is_a?(Hash)
             k.split('.').reverse.each do |scope|
               value = {scope => value}
             end
-            t.merge!(value, &MERGER)
+            translations.merge!(value, &MERGER)
           end
         end
-        t
+        translations
       end
     end
 
