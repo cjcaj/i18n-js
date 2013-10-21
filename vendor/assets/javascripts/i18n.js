@@ -129,9 +129,12 @@ I18n.lookup = function(scope, options) {
     }
 
     if (!messages && this.isValidNode(options, "defaultValue")) {
-        messages = options.defaultValue;
-        event = new CustomEvent("translations:defaultValue", {'detail': {'key': lookupInitialScope, 'default': messages}});
-        window.dispatchEvent(event);
+      messages = options.defaultValue;
+      if (typeof CustomEvent != "undefined") {
+        ce = document.createEvent("CustomEvent");
+        ce.initCustomEvent("translations:defaultValue", true, true, {'key': lookupInitialScope, 'default': messages});
+        window.dispatchEvent(ce);
+      }
     }
   }
 
